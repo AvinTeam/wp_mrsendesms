@@ -1,14 +1,8 @@
 <?php
-final class SendSMS
+namespace smsclass;
+
+class SendSMS extends SMSOption
 {
-
-    private $option;
-
-    public function __construct()
-    {
-        $this->option = get_option('mrsms_option');
-
-    }
 
     /* panel sms  */
     private function notificator($mobile, $massage)
@@ -26,7 +20,7 @@ final class SendSMS
         $result = json_decode(wp_remote_retrieve_body($response));
 
         $result = [
-            'code'    => $result->success,
+            'success' => true,
             'massage' => ($result->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
          ];
 
@@ -55,10 +49,9 @@ final class SendSMS
          ]);
 
         $response = json_decode(wp_remote_retrieve_body($response));
-
-        $result = [
-            'code'    => ($response->code == 200) ? 1 : $response->code,
-            'massage' => ($response->code == 200) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
+        $result   = [
+            'success' => ($response->code == 200) ? true : false,
+            'massage' => ($response->code == 200) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است کد: ' . $response->code,
          ];
         return $result;
 
@@ -84,13 +77,12 @@ final class SendSMS
         $response = json_decode(wp_remote_retrieve_body($response));
 
         $result = [
-            'code'    => ($response->result == 'success' && strlen($response->messageids) > 5) ? 1 : $response->messageids,
-            'massage' => ($response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
+            'success' => ($response->result == 'success' && strlen($response->messageids) > 5) ? true : false,
+            'massage' => ($response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است کد: ' . $response->messageids,
          ];
         return $result;
 
     }
-/* filter number */
 
     private function sanitize_phone($phone)
     {
@@ -149,57 +141,15 @@ final class SendSMS
 
     }
 
-/* type massage */
-    private function otp($otp)
+    private function otp($mobile)
     {
 
-        $server_name = isset($_SERVER[ 'HTTP_HOST' ]) ? $_SERVER[ 'HTTP_HOST' ] : $_SERVER[ 'SERVER_NAME' ];
-
-        $finalMessage = str_replace('%otp%', $otp, $this->option[ 'sms_text_otp' ]);
-
-        $message = "$finalMessage\n@$server_name #$otp";
-
-        return $message;
-    }
-
-    private function massage($data)
-    {
-        $server_name = $_SERVER[ 'SERVER_NAME' ];
-
-        $finalMessage = str_replace([ '%username%', '%password%', '%url%' ], $data, $this->option[ 'sms_text_format' ]);
-        $massage      = $finalMessage . PHP_EOL . $server_name;
-
-        return $massage;
-
-    }
-
-/* send sms */
-    public function send_sms($mobile, $type, $data = [  ])
-    {
-        $mobile = $this->sanitize_phone($mobile);
-
-        $massage = '';
-
-        $result = [
-            'code'    => 0,
-            'massage' => $mobile,
-         ];
-
-        // بررسی فرمت شماره موبایل
-        if (empty($mobile)) {
-            $result = [
-                'code'    => -1,
-                'massage' => 'شماره موبایل معتبر نیست.',
+        if (get_transient('otp_' . $mobile)) {
+            return [
+                'success' => false,
+                'massage' => 'لطفا چند دقیقه دیگر تلاش کنید.',
              ];
-        }
-
-        if ($type == 'otp') {
-            if (get_transient('otp_' . $mobile)) {
-                $result = [
-                    'code'    => -2,
-                    'massage' => 'لطفا چند دقیقه دیگر تلاش کنید.',
-                 ];
-            }
+        } else {
 
             $otp = '';
 
@@ -208,21 +158,42 @@ final class SendSMS
             }
             set_transient('otp_' . $mobile, $otp, $this->option[ 'set_timer' ] * MINUTE_IN_SECONDS);
 
-            if ($result[ 'code' ] == 0) {
-                $result = $this->option[ 'sms_type' ]($mobile, $this->otp($otp));
-                if ($result[ 'code' ] != 1) {
+            $server_name = isset($_SERVER[ 'HTTP_HOST' ]) ? $_SERVER[ 'HTTP_HOST' ] : $_SERVER[ 'SERVER_NAME' ];
+
+            $finalMessage = str_replace('%otp%', $otp, $this->option[ 'sms_text_otp' ]);
+
+            $message = "$finalMessage\n@$server_name #$otp";
+
+            return [
+                'success' => true,
+                'massage' => $message,
+             ];
+        }
+    }
+
+    public function send($mobile, $type, $data = [  ])
+    {
+        $mobile = $this->sanitize_phone($mobile);
+
+        // بررسی فرمت شماره موبایل
+        if (empty($mobile)) {
+            $result = [
+                'success' => false,
+                'massage' => 'شماره موبایل معتبر نیست.',
+             ];
+        }
+        if ($type == 'otp') {
+            $result = $this->otp($mobile);
+            if ($result[ 'success' ]) {
+
+                $sms_type = $this->option[ 'sms_type' ];
+
+                $result = $this->$sms_type($mobile, $result[ 'massage' ]);
+                if (! $result[ 'success' ]) {
                     delete_transient('otp_' . $mobile);
-
                 }
-
             }
         }
-
-        if ($type == 'formrsms_art') {
-            $result = $this->option[ 'sms_type' ]($mobile, $this->massage($data));
-
-        }
-
-        return $result;
+        return $result || [ 'success' => false, 'massage' => '' ];
     }
 }

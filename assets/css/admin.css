@@ -1,106 +1,13 @@
-@font-face {
-  font-family: "vazir";
-  src: url("../fonts/Vazir-Bold-FD.eot");
-  src: url("../fonts/Vazir-Bold-FD.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Vazir-Bold-FD.woff2") format("woff2"),
-    url("../fonts/Vazir-Bold-FD.woff") format("woff"),
-    url("../fonts/Vazir-Bold-FD.ttf") format("truetype");
-  font-weight: bold;
-}
-
-@font-face {
-  font-family: "vazir";
-  src: url("../fonts/Vazir-FD.eot");
-  src: url("../fonts/Vazir-FD.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Vazir-FD.woff2") format("woff2"),
-    url("../fonts/Vazir-FD.woff") format("woff"),
-    url("../fonts/Vazir-FD.ttf") format("truetype");
-}
-
-* {
-  font-family: vazir;
-}
-
-.d-n,
-#minor-publishing {
+.d-n {
   display: none !important;
 }
 
-.mrsms_parent {
-  display: flex;
-  width: 100%;
-  gap: 10px;
+.dir-ltr{
+  direction: ltr;
 }
 
-
-.atlas-row {
-  display: flex;
-}
-
-
-.menu-preview {
-  margin: 5px 0px;
-  padding: 10px;
-  border-radius: 10px;
-  width: 100%;
-}
-
-.menu-preview input {
-  padding: 5px;
-}
-
-.center-type label {
-  padding-left: 10px;
-}
-
-#subject_tagsinput {
-  float: right;
-  border-color: #000;
-}
-
-
-#subject_tagsinput span,
-#subject_tagsinput #subject_addTag {
-  float: right;
-}
-
-#subject_tagsinput span {
-  border: none;
-  background: #f6f7f4;
-  color: #000000;
-
-}
-
-#subject_tagsinput span a {
-  font-weight: 700;
-  color: red;
-  text-decoration: none;
-  font-size: 11px;
-}
-
-
-#all_subject {
-  float: right;
-}
-
-#all_subject span {
-  float: right !important;
-  background: #cde69c;
-  display: block;
-  float: left;
-  padding: 5px;
-  text-decoration: none;
-  color: #638421;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  font-family: helvetica;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-#all_subject span.active {
-  background-color: red !important;
-  color: #FFFFFF !important;
+.w-100 {
+  width: 100% !important;
 }
 
 .button-error {
@@ -122,36 +29,3 @@
   background: #139613 !important;
   border-color: #139613 !important;
 }
-
-.atlas-teacher-row {
-  margin: 10px 0px;
-  display: flex;
-  gap: 2px;
-}
-
-.form-link input {
-  direction: ltr;
-
-}
-
-.province-list {
-  width: 100%;
-  padding: 10px;
-  text-align: center;
-  line-height: 4;
-}
-
-.province-item {
-  width: 15%;
-  padding: 20px !important;
-  margin: 5px 10px !important;
-  border-radius: 20px !important;
-}
-
-.province-item:hover {
-  background: #135e96 !important;
-  border-color: #135e96 !important;
-  color: #fff !important;
-}
-
-

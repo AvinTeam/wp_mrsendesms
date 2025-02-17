@@ -1,5 +1,7 @@
 <?php
 
+use smsclass\SendSMS;
+use smsclass\SMSOption;
 
 add_action('wp_ajax_nopriv_mrsms_sent_sms', 'mrsms_sent_sms');
 
@@ -10,17 +12,14 @@ function mrsms_sent_sms()
         if ($_POST[ 'mobileNumber' ] !== "") {
             $mobile = sanitize_text_field($_POST[ 'mobileNumber' ]);
 
- 
+            $send_sms = new SendSMS();
 
+            $res = $send_sms->send($mobile, 'otp');
 
-                //$mrsms_send_sms = mrsms_send_sms($mobile, 'otp');
+            wp_send_json_success($res);
 
-                // if ($mrsms_send_sms[ 'code' ] == 1) {
-                //     wp_send_json_success($mrsms_send_sms[ 'massage' ]);
-                // }
-                // wp_send_json_error($mrsms_send_sms[ 'massage' ], 403);
+            delete_transient('otp_' . $mobile);
 
-            
             wp_send_json_error('شما مجاز به وارد شوید', 403);
 
         }
@@ -50,6 +49,7 @@ function mrsms_sent_verify()
             if (! $saved_otp || $saved_otp !== $otp) {
                 wp_send_json_error('کد تأیید اشتباه یا منقضی شده است. ', 403);
             } else {
+                $option = new SMSOption();
 
                 $user_query = new WP_User_Query([
                     'meta_key'   => 'mobile',
@@ -59,72 +59,36 @@ function mrsms_sent_verify()
 
                 if (! empty($user_query->get_results())) {
                     $user = $user_query->get_results()[ 0 ];
+
                     wp_set_current_user($user->ID);
-                    wp_set_auth_cookie($user->ID, true);
+                    wp_set_auth_cookie($user->ID, $option->get('setcookie'));
 
                     $massage = 'خوش آمدید، شما وارد شدید!';
 
                 } else {
 
-                    // $args = [
-                    //     'post_type'      => 'institute',
-                    //     'post_status'    => [ 'pending', 'publish', 'draft' ],
-                    //     'meta_query'     => [
-                    //         [
-                    //             'key'     => '_mrsms_responsible-mobile',
-                    //             'value'   => $mobile,
-                    //             'compare' => '=',
-                    //          ],
-                    //      ],
-                    //     'fields'         => 'ids',
-                    //     'posts_per_page' => -1,
-                    //  ];
+                    $username = apply_filters('mrsms_username', $mobile);
 
-                    // $query = new WP_Query($args);
+                    $full_name = apply_filters('mrsms_fullname', '');
 
-                    // $post_count = $query->found_posts;
-                    // if ($post_count >= 1 && $query->have_posts()) {
+                    $user_id = wp_create_user($username, wp_generate_password(), $username . '@example.com');
 
-                    //     $post_id = $query->posts[ 0 ];
+                    if (! is_wp_error($user_id)) {
+                        update_user_meta($user_id, 'nickname', $full_name);
+                        update_user_meta($user_id, 'mobile', $mobile);
+                        update_user_meta($user_id, 'first_name', $full_name);
 
-                    //     $full_name = get_post_meta($post_id, '_mrsms_responsible', true);
+                        if ($user_role = apply_filters('mrsms_user_role', '')) {
 
-                    //     $user_id = wp_create_user($mobile, wp_generate_password(), $mobile . '@example.com');
+                            $user = new WP_User($user_id);
 
-                    //     if (! is_wp_error($user_id)) {
-                    //         update_user_meta($user_id, 'nickname', $full_name);
-                    //         update_user_meta($user_id, 'mobile', $mobile);
-                    //         update_user_meta($user_id, 'first_name', $full_name);
+                            $user->set_role($user_role);
+                        }
+                        wp_set_current_user($user_id);
+                        wp_set_auth_cookie($user_id, $option->get('setcookie'));
 
-                    //         $user = new WP_User($user_id);
-                    //         $user->set_role('responsible');
-
-                    //         wp_update_user([
-                    //             'ID'           => $user_id,
-                    //             'display_name' => $full_name,
-                    //          ]);
-
-                    //         wp_set_current_user($user_id);
-                    //         wp_set_auth_cookie($user_id, true);
-
-                    //         while ($query->have_posts()) {
-                    //             $query->the_post();
-
-                    //             $post_data = [
-                    //                 'ID'          => get_the_ID(),
-                    //                 'post_author' => $user_id,
-                    //              ];
-
-                    //             update_post_meta(get_the_ID(), '_mrsms_responsible', $full_name);
-
-                    //             wp_update_post($post_data, true);
-
-                    //         }
-
-                    //         $massage = 'ثبت‌ نام با موفقیت انجام شد و شما وارد شدید!';
-                    //     }
-
-                    // }
+                        $massage = 'ثبت‌ نام با موفقیت انجام شد و شما وارد شدید!';
+                    }
 
                 }
 
@@ -141,4 +105,3 @@ function mrsms_sent_verify()
     wp_send_json_error('لطفا دوباره تلاش کنید', 403);
 
 }
-

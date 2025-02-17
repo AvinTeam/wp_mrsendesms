@@ -5,7 +5,7 @@
  * Plugin Name: ارسال پیامک
  * Plugin URI:  http://avinmedia.ir/
  * Description: ارسال پیامک با پنل های tsms و قاصدک
- * Version:     1.0.0
+ * Version:     1.0.2
  * Author:      Mohammadreza Rashidpour Aghamahali
  * Author URI:  https://www.mrrashidpour.com/
  * License:     GPLv2 or later
@@ -24,7 +24,7 @@
 
 (defined('ABSPATH')) || exit;
 
-define('MRSMS_VERSION', '1.0.0');
+define('MRSMS_VERSION', '1.0.2');
 
 define('MRSMS_FILE', __FILE__);
 define('MRSMS_PATH', plugin_dir_path(__FILE__));
@@ -40,12 +40,16 @@ define('MRSMS_CSS', MRSMS_ASSETS . 'css/');
 define('MRSMS_JS', MRSMS_ASSETS . 'js/');
 define('MRSMS_IMAGE', MRSMS_ASSETS . 'images/');
 
+require_once MRSMS_CLASS . 'SMSOption.php';
+require_once MRSMS_CLASS . 'SendSMS.php';
+
 require_once MRSMS_INCLUDES . 'styles.php';
 require_once MRSMS_INCLUDES . 'ajax.php';
-require_once MRSMS_CLASS . 'SendSMS.php';
+require_once MRSMS_INCLUDES . 'function.php';
 
 if (is_admin()) {
 
     require_once MRSMS_INCLUDES . '/menu.php';
+    require_once MRSMS_INCLUDES . '/edit_user_table.php';
 
 }

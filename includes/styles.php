@@ -1,5 +1,7 @@
 <?php
 
+use smsclass\SMSOption;
+
 (defined('ABSPATH')) || exit;
 
 add_action('admin_enqueue_scripts', 'mrsms_admin_script');
@@ -24,13 +26,15 @@ function mrsms_admin_script()
         true
     );
 
+    $option = new SMSOption();
+
     wp_localize_script(
         'mrsms_admin',
         'mrsms_js',
         [
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('ajax-nonce'),
-            'option'   => mrsms_start_working(),
+            'option'   => $option->get(),
 
          ]
     );
@@ -56,6 +60,7 @@ function mrsms_style()
         MRSMS_VERSION,
         true
     );
+    $option = new SMSOption();
 
     wp_localize_script(
         'mrsms_js',
@@ -63,7 +68,7 @@ function mrsms_style()
         [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('ajax-nonce' . mrsms_cookie()),
-            'option'  => mrsms_start_working(),
+            'option'  => $option->get(),
 
          ]
     );
