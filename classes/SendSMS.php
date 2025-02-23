@@ -5,7 +5,7 @@ class SendSMS extends SMSOption
 {
 
     /* panel sms  */
-    private function notificator($mobile, $massage)
+    public function notificator($mobile, $massage)
     {
 
         $data = [
@@ -21,7 +21,7 @@ class SendSMS extends SMSOption
 
         $result = [
             'success' => true,
-            'massage' => ($res->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
+            'massage' => (isset($res->success) && $res->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
          ];
 
         return $result;

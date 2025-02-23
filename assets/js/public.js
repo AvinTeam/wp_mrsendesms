@@ -1,3 +1,41 @@
+
+function startLoading() {
+    var overlay = document.getElementById("overlay");
+
+    if (overlay) {
+        overlay.style.display = "flex"; // نمایش به صورت flex
+        overlay.style.opacity = "0"; // آماده‌سازی برای افکت fadeIn
+        overlay.style.transition = "opacity 0.5s ease-in-out"; // اضافه کردن انیمیشن
+
+        // تأخیر برای اعمال transition
+        setTimeout(() => {
+            overlay.style.opacity = "1";
+        }, 10);
+    }
+
+    document.body.classList.add("no-scroll"); // اضافه کردن کلاس به body
+}
+
+function endLoading() {
+
+    var overlay = document.getElementById("overlay");
+
+    if (overlay) {
+        overlay.style.transition = "opacity 0.5s ease-in-out"; // اضافه کردن انیمیشن
+        overlay.style.opacity = "0"; // شروع افکت fadeOut
+
+        setTimeout(() => {
+            overlay.style.display = "none"; // بعد از محو شدن، مخفی کردن کامل
+        }, 500); // مقدار 500 باید با زمان transition هماهنگ باشه
+    }
+
+    document.body.classList.remove("no-scroll"); // حذف کلاس از body
+
+}
+
+
+
+
 const pageLogin = document.getElementById('loginForm');
 if (pageLogin) {
 
@@ -9,6 +47,8 @@ if (pageLogin) {
     }
 
     function send_sms() {
+        startLoading();
+
         let mobile = document.getElementById('mobile').value;
         if (validateMobile(mobile)) {
 
@@ -17,6 +57,7 @@ if (pageLogin) {
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function () {
 
+                endLoading();
                 const response = JSON.parse(xhr.responseText);
 
                 if (xhr.status === 200 && response.success) {
@@ -42,6 +83,7 @@ if (pageLogin) {
             isSendSms = true
 
             console.error('شماره موبایل نامعتبر است');
+            endLoading();
 
         }
     }
@@ -56,6 +98,8 @@ if (pageLogin) {
     });
 
     document.getElementById('verifyCode').addEventListener('click', function () {
+        startLoading();
+
         let mobile = document.getElementById('mobile').value;
 
         let verificationCode = document.getElementById('verificationCode').value;
@@ -66,6 +110,7 @@ if (pageLogin) {
         xhr.onload = function () {
 
             const response = JSON.parse(xhr.responseText);
+            endLoading();
 
             if (xhr.status === 200) {
                 if (response.success) {
@@ -186,7 +231,7 @@ jQuery(document).ready(function ($) {
 
     $('#mobileForm #mobile').keyup(function (e) {
         e.preventDefault();
-        
+
         let mobile = $(this).val();
 
         if (mobile.length >= 11) {
