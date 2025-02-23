@@ -5,8 +5,12 @@ function custom_login_cookie_expiration($expiration)
 }
 add_filter('auth_cookie_expiration', 'custom_login_cookie_expiration');
 
-add_action('init', function () {
-    mrsms_cookie();
+add_action('wp', function () {
+    if (! isset($_COOKIE[ "setcookie_mrsms_nonce" ])) {
+
+        setcookie("setcookie_mrsms_nonce", wp_generate_password(15), time() + 1800, "/");
+
+    }
 });
 
 /**
