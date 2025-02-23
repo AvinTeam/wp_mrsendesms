@@ -4,14 +4,14 @@ use smsclass\SMSOption;
 
 (defined('ABSPATH')) || exit;
 
-add_action('admin_menu', 'mph_admin_menu');
+add_action('admin_menu', 'mrsms_admin_menu');
 
 /**
  * Fires before the administration menu loads in the admin.
  *
  * @param string $context Empty context.
  */
-function mph_admin_menu(string $context): void
+function mrsms_admin_menu(string $context): void
 {
 
     $setting_suffix = add_menu_page(
@@ -19,7 +19,7 @@ function mph_admin_menu(string $context): void
         'پنل پیامک',
         'manage_options',
         'mrsms',
-        'setting_panels',
+        'mrsms_setting_panels',
         'dashicons-hammer',
         0
     );
@@ -30,10 +30,10 @@ function mph_admin_menu(string $context): void
         'تنظیمات',
         'manage_options',
         'mrsms',
-        'setting_panels',
+        'mrsms_setting_panels',
     );
 
-    function setting_panels()
+    function mrsms_setting_panels()
     {
 
         $option       = new SMSOption();

@@ -1,11 +1,11 @@
 <?php
 defined('ABSPATH') || exit;
 
-add_action('edit_user_profile', 'dsl_user_inputs');
-add_action('show_user_profile', 'dsl_user_inputs');
-add_action('user_new_form', 'dsl_user_inputs');
+add_action('edit_user_profile', 'mrsms_user_inputs');
+add_action('show_user_profile', 'mrsms_user_inputs');
+add_action('user_new_form', 'mrsms_user_inputs');
 
-function dsl_user_inputs($user)
+function mrsms_user_inputs($user)
 {
     $mobile = '';
     if (is_a($user, 'WP_User')) {
@@ -15,11 +15,11 @@ function dsl_user_inputs($user)
     include MRSMS_VIEWS . 'user-inputs.php';
 }
 
-add_action('edit_user_profile_update', 'dsl_update_user');
-add_action('personal_options_update', 'dsl_update_user');
-add_action('user_register', 'dsl_update_user');
+add_action('edit_user_profile_update', 'mrsms_update_user');
+add_action('personal_options_update', 'mrsms_update_user');
+add_action('user_register', 'mrsms_update_user');
 
-function dsl_update_user($user_id)
+function mrsms_update_user($user_id)
 {
 
     if (! current_user_can('edit_user', $user_id)) {

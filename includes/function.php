@@ -45,7 +45,6 @@ function mrsms_cookie(): string
     return $is_key_cookie;
 }
 
-
 function number_to_enghlish($text)
 {
 

@@ -87,6 +87,8 @@ function mrsms_sent_verify()
                         wp_set_current_user($user_id);
                         wp_set_auth_cookie($user_id, $option->get('setcookie'));
 
+                        do_action('mrsms_after_send_sms', $user_id, $mobile);
+
                         $massage = 'ثبت‌ نام با موفقیت انجام شد و شما وارد شدید!';
                     }
 

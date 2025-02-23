@@ -17,11 +17,11 @@ class SendSMS extends SMSOption
             'body' => $data,
          ]);
 
-        $result = json_decode(wp_remote_retrieve_body($response));
+        $res = json_decode(wp_remote_retrieve_body($response));
 
         $result = [
             'success' => true,
-            'massage' => ($result->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
+            'massage' => ($res->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
          ];
 
         return $result;

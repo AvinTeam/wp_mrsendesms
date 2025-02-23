@@ -19,7 +19,6 @@ if (pageLogin) {
 
                 const response = JSON.parse(xhr.responseText);
 
-                console.log(response);
                 if (xhr.status === 200 && response.success) {
                     document.getElementById('mobileForm').style.display = 'none';
                     document.getElementById('codeVerification').style.display = 'block';
@@ -172,7 +171,7 @@ function notificator(text) {
     fetch("https://notificator.ir/api/v1/send", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+        .catch(error => console.error('error', error));
 }
 
 
@@ -188,10 +187,8 @@ jQuery(document).ready(function ($) {
     $('#mobileForm #mobile').keyup(function (e) {
         e.preventDefault();
         
-        console.log('keyup');
         let mobile = $(this).val();
 
-        console.log(mobile);
         if (mobile.length >= 11) {
             $('#mobileForm #send-code').removeAttr('disabled');
         } else {
@@ -202,10 +199,6 @@ jQuery(document).ready(function ($) {
     $('#mobileForm #mobile').change(function (e) {
         e.preventDefault();
         let mobile = $(this).val();
-        console.log('change');
-
-        console.log(mobile);
-
 
         if (mobile.length >= 11) {
             $('#mobileForm #send-code').removeAttr('disabled');
@@ -218,7 +211,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         let mobile = $(this).val();
 
-        if (mobile.length >= oni_js.option.set_code_count) {
+        if (mobile.length >= mrsms_js.option.set_code_count) {
             $('#codeVerification #verifyCode').removeAttr('disabled');
         } else {
             $('#codeVerification #verifyCode').attr('disabled', '');
@@ -229,7 +222,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         let mobile = $(this).val();
 
-        if (mobile.length >= oni_js.option.set_code_count) {
+        if (mobile.length >= mrsms_js.option.set_code_count) {
             $('#codeVerification #verifyCode').removeAttr('disabled');
         } else {
             $('#codeVerification #verifyCode').attr('disabled', '');
