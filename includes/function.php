@@ -47,6 +47,7 @@ function mrsms_cookie(): string
 
 function number_to_enghlish($text)
 {
+    $text = trim($text);
 
     $western = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
     $persian = [ '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' ];
@@ -59,7 +60,6 @@ function number_to_enghlish($text)
 
 function sanitize_phone($phone)
 {
-
     /**
      * Convert all chars to en digits
      */
