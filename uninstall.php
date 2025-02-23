@@ -1,6 +1,8 @@
 <?php
 
-if (!defined('WP_UNINSTALL_PLUGIN')) {
+use smsclass\SMSOption;
+
+if (! defined('WP_UNINSTALL_PLUGIN')) {
     exit();
 }
 
@@ -8,12 +10,8 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 
 // $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $wpdb->prefix . 'mr_aparat_row'));
 
+require_once plugin_dir_path(__FILE__) . 'classes/SMSOption.php';
 
+$option = new SMSOption();
 
-
-
-if (get_option('mat_option') !== false) {
-    delete_option('mat_option');
-}
-
-
+$option->delete();

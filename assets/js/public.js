@@ -19,6 +19,7 @@ if (pageLogin) {
 
                 const response = JSON.parse(xhr.responseText);
 
+                console.log(response);
                 if (xhr.status === 200 && response.success) {
                     document.getElementById('mobileForm').style.display = 'none';
                     document.getElementById('codeVerification').style.display = 'block';

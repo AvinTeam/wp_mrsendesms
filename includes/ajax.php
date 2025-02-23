@@ -20,13 +20,13 @@ function mrsms_sent_sms()
 
             delete_transient('otp_' . $mobile);
 
-            wp_send_json_error('شما مجاز به وارد شوید', 403);
+            wp_send_json_error('شما مجاز به وارد شوید');
 
         }
-        wp_send_json_error('شماره شما به درستی وارد نشده است', 403);
+        wp_send_json_error('شماره شما به درستی وارد نشده است');
 
     } else {
-        wp_send_json_error('لطفا یکبار صفحه را بروزرسانی کنید', 403);
+        wp_send_json_error('لطفا یکبار صفحه را بروزرسانی کنید');
 
     }
 
@@ -103,5 +103,22 @@ function mrsms_sent_verify()
 
     }
     wp_send_json_error('لطفا دوباره تلاش کنید', 403);
+
+}
+
+add_action('wp_ajax_mrtv_get_count_sms', 'mrtv_get_count_sms');
+add_action('wp_ajax_nopriv_mrsms_sent_verify', 'mrsms_sent_verify');
+
+function mrtv_get_count_sms()
+{
+
+    // $ghasedak = 0;
+
+    // if (isset($ghasedak->totalcount)) {
+
+    //     $conut =  intval($ghasedak->totalcount);
+    //     wp_send_json_success(number_format($conut));
+    // }
+    // wp_send_json_error('لطفا دوباره تلاش کنید', 403);
 
 }
