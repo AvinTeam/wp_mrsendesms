@@ -24,11 +24,18 @@ function mrsms_cookie(): string
 
         if (! isset($_COOKIE[ "setcookie_mrsms_nonce" ])) {
 
-            $is_key_cookie = $_COOKIE[ "setcookie_mrsms_nonce" ];
+            $is_key_cookie = wp_generate_password(15);
+            ob_start();
 
-        } else {
+            setcookie("setcookie_mrsms_nonce", $is_key_cookie, time() + 1800, "/");
+
+            ob_end_flush();
+
             header("Refresh:0");
             exit;
+
+        } else {
+            $is_key_cookie = $_COOKIE[ "setcookie_mrsms_nonce" ];
         }
     } else {
 
