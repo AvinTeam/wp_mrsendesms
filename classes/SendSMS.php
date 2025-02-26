@@ -84,62 +84,68 @@ class SendSMS extends SMSOption
 
     }
 
-    private function sanitize_phone($phone)
+    private function sanitize_mobile($mobile)
     {
 
-        $phone = trim($phone);
+        $mobile = trim($mobile);
 
         $western = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
         $persian = [ '۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹' ];
         $arabic  = [ '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' ];
 
-        $phone = str_replace($persian, $western, $phone);
-        $phone = str_replace($arabic, $western, $phone);
+        $mobile = str_replace($persian, $western, $mobile);
+        $mobile = str_replace($arabic, $western, $mobile);
         /**
          * Convert all chars to en digits
          */
 
+        // is Mobile
+        $pattern = '/^(\+98|0)?9\d{9}$/';
+        if (! preg_match($pattern, $mobile)) {
+            return '';
+        }
+
         //.9158636712   => 09158636712
-        if (strpos($phone, '.') === 0) {
-            $phone = '0' . substr($phone, 1);
+        if (strpos($mobile, '.') === 0) {
+            $mobile = '0' . substr($mobile, 1);
         }
 
         //00989185223232 => 9185223232
-        if (strpos($phone, '0098') === 0) {
-            $phone = substr($phone, 4);
+        if (strpos($mobile, '0098') === 0) {
+            $mobile = substr($mobile, 4);
         }
         //0989108210911 => 9108210911
-        if (strlen($phone) == 13 && strpos($phone, '098') === 0) {
-            $phone = substr($phone, 3);
+        if (strlen($mobile) == 13 && strpos($mobile, '098') === 0) {
+            $mobile = substr($mobile, 3);
         }
         //+989156040160 => 9156040160
-        if (strlen($phone) == 13 && strpos($phone, '+98') === 0) {
-            $phone = substr($phone, 3);
+        if (strlen($mobile) == 13 && strpos($mobile, '+98') === 0) {
+            $mobile = substr($mobile, 3);
         }
         //+98 9156040160 => 9156040160
-        if (strlen($phone) == 14 && strpos($phone, '+98 ') === 0) {
-            $phone = substr($phone, 4);
+        if (strlen($mobile) == 14 && strpos($mobile, '+98 ') === 0) {
+            $mobile = substr($mobile, 4);
         }
         //989152532120 => 9152532120
-        if (strlen($phone) == 12 && strpos($phone, '98') === 0) {
-            $phone = substr($phone, 2);
+        if (strlen($mobile) == 12 && strpos($mobile, '98') === 0) {
+            $mobile = substr($mobile, 2);
         }
         //Prepend 0
-        if (strpos($phone, '0') !== 0) {
-            $phone = '0' . $phone;
+        if (strpos($mobile, '0') !== 0) {
+            $mobile = '0' . $mobile;
         }
         /**
          * check for all character was digit
          */
-        if (! ctype_digit($phone)) {
+        if (! ctype_digit($mobile)) {
             return '';
         }
 
-        if (strlen($phone) != 11) {
+        if (strlen($mobile) != 11) {
             return '';
         }
 
-        return $phone;
+        return $mobile;
 
     }
 
@@ -175,11 +181,11 @@ class SendSMS extends SMSOption
 
     public function send($mobile, $type, $data = [  ])
     {
-        $mobile = $this->sanitize_phone($mobile);
+        $mobile = $this->sanitize_mobile($mobile);
 
         // بررسی فرمت شماره موبایل
-        if (empty($mobile)) {
-            $result = [
+        if (empty($mobile) || empty($this->sanitize_mobile($mobile))) {
+            return [
                 'success' => false,
                 'massage' => 'شماره موبایل معتبر نیست.',
              ];
@@ -196,6 +202,6 @@ class SendSMS extends SMSOption
                 }
             }
         }
-        return $result || [ 'success' => false, 'massage' => '' ];
+        return $result || [ 'success' => false, 'massage' => 'خطا' ];
     }
 }
