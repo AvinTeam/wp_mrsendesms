@@ -76,9 +76,14 @@ class SendSMS extends SMSOption
 
         $response = json_decode(wp_remote_retrieve_body($response));
 
+        if (isset($response->messageids) && $response->messageids == null) {
+            error_log('mobile: ' . $mobile);
+            error_log(print_r($response, true));
+        }
+
         $result = [
-            'success' => ($response->result == 'success' && strlen($response->messageids) > 5) ? true : false,
-            'massage' => ($response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است کد: ' . $response->messageids,
+            'code'    => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 1 : $response->messageids,
+            'massage' => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
          ];
         return $result;
 
