@@ -63,8 +63,8 @@ function mrsms_admin_menu(string $context): void
 
     $mrsms_login_form_suffix = add_submenu_page(
         'mrsms',
-        'فرم لاگین',
-        'فرم لاگین',
+        'فرم',
+        'فرم',
         'manage_options',
         'sms_form',
         'mrsms_login_form',

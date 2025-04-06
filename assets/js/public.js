@@ -48,6 +48,7 @@ if (pageLogin) {
 
     function send_sms() {
         startLoading();
+        let created_user = document.getElementById('created_user').value;
 
         let mobile = document.getElementById('mobile').value;
         if (validateMobile(mobile)) {
@@ -77,7 +78,7 @@ if (pageLogin) {
 
                 }
             };
-            xhr.send(`action=mrsms_sent_sms&nonce=${mrsms_js.nonce}&mobileNumber=${mobile}`);
+            xhr.send(`action=mrsms_sent_sms&nonce=${mrsms_js.nonce}&mobileNumber=${mobile}&created_user=${created_user}`);
 
         } else {
             isSendSms = true
@@ -101,6 +102,7 @@ if (pageLogin) {
         startLoading();
 
         let mobile = document.getElementById('mobile').value;
+        let created_user = document.getElementById('created_user').value;
 
         let verificationCode = document.getElementById('verificationCode').value;
 
@@ -122,7 +124,7 @@ if (pageLogin) {
 
             }
         };
-        xhr.send(`action=mrsms_sent_verify&nonce=${mrsms_js.nonce}&otpNumber=${verificationCode}&mobileNumber=${mobile}`);
+        xhr.send(`action=mrsms_sent_verify&nonce=${mrsms_js.nonce}&otpNumber=${verificationCode}&mobileNumber=${mobile}&created_user=${created_user}`);
 
 
     });

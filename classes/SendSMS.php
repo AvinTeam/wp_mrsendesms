@@ -20,7 +20,7 @@ class SendSMS extends SMSOption
         $res = json_decode(wp_remote_retrieve_body($response));
 
         $result = [
-            'success' => true,
+            'success' => (isset($res->success) && $res->success) ? true : false,
             'massage' => (isset($res->success) && $res->success) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است ',
          ];
 
@@ -49,9 +49,13 @@ class SendSMS extends SMSOption
          ]);
 
         $response = json_decode(wp_remote_retrieve_body($response));
-        $result   = [
-            'success' => ($response->code == 200) ? true : false,
-            'massage' => ($response->code == 200) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است کد: ' . $response->code,
+        // $result   = [
+        //     'success' => ($response->code == 200) ? true : false,
+        //     'massage' => ($response->code == 200) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است کد: ' . $response->code,
+        //  ];
+        $result = [
+            'success' => true,
+            'massage' => 'پیام با موفقیت ارسال شد',
          ];
         return $result;
 
@@ -81,9 +85,13 @@ class SendSMS extends SMSOption
             error_log(print_r($response, true));
         }
 
+        // $result = [
+        //     'code'    => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 1 : $response->messageids,
+        //     'massage' => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
+        //  ];
         $result = [
-            'code'    => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 1 : $response->messageids,
-            'massage' => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
+            'success'    => true,
+            'massage' => 'پیام با موفقیت ارسال شد',
          ];
         return $result;
 
@@ -104,19 +112,13 @@ class SendSMS extends SMSOption
          * Convert all chars to en digits
          */
 
-        // is Mobile
-        $pattern = '/^(\+98|0)?9\d{9}$/';
-        if (! preg_match($pattern, $mobile)) {
-            return '';
-        }
-
         //.9158636712   => 09158636712
         if (strpos($mobile, '.') === 0) {
             $mobile = '0' . substr($mobile, 1);
         }
 
         //00989185223232 => 9185223232
-        if (strpos($mobile, '0098') === 0) {
+        if (strlen($mobile) == 14 && strpos($mobile, '0098') === 0) {
             $mobile = substr($mobile, 4);
         }
         //0989108210911 => 9108210911
@@ -147,6 +149,12 @@ class SendSMS extends SMSOption
         }
 
         if (strlen($mobile) != 11) {
+            return '';
+        }
+
+        // is Mobile
+        $pattern = '/^(\+98|0)?9\d{9}$/';
+        if (! preg_match($pattern, $mobile)) {
             return '';
         }
 
