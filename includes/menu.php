@@ -61,6 +61,24 @@ function mrsms_admin_menu(string $context): void
 
     }
 
+    $setting_login_suffix = add_submenu_page(
+        'mrsms',
+        'تنظیمات برای ورود',
+        'تنظیمات برای ورود',
+        'manage_options',
+        'setting_login',
+        'mrsms_sms_logon',
+    );
+
+    function mrsms_sms_logon()
+    {
+        $option       = new SMSOption();
+        $mrsms_option = $option->get();
+
+        require_once MRSMS_VIEWS . 'menu/setting_login.php';
+
+    }
+
     $mrsms_login_form_suffix = add_submenu_page(
         'mrsms',
         'فرم',
@@ -82,6 +100,7 @@ function mrsms_admin_menu(string $context): void
 
     add_action('load-' . $setting_suffix, 'mrsms__submit');
     add_action('load-' . $sms_panels_suffix, 'mrsms__submit');
+    add_action('load-' . $setting_login_suffix, 'mrsms__submit');
 
     function mrsms__submit()
     {

@@ -1,5 +1,7 @@
 <?php
 
+use smsclass\SendSMS;
+
 (defined('ABSPATH')) || exit;
 
 function mrsms_panel_js($path)
@@ -127,3 +129,17 @@ function sanitize_array_no_item($item)
     return $new_item;
 
 }
+
+function mrsms_send_sms($mobile, $massage)
+{
+
+    $send_sms = new SendSMS();
+
+    return $send_sms->send($mobile, 'massage', $massage);
+
+}
+
+// $payid ="";
+// $user_mobile = $mph_db->get('payid', $payid);
+
+// print_r($user_mobile);

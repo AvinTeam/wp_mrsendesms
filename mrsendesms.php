@@ -5,7 +5,7 @@
  * Plugin Name: ارسال پیامک
  * Plugin URI:  http://avinmedia.ir/
  * Description: ارسال پیامک با پنل های tsms و قاصدک
- * Version:     1.1.2
+ * Version:     2.0.0
  * Author:      Mohammadreza Rashidpour Aghamahali
  * Author URI:  https://www.mrrashidpour.com/
  * License:     GPLv2 or later

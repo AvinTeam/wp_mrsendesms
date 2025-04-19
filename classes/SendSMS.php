@@ -3,7 +3,6 @@ namespace smsclass;
 
 class SendSMS extends SMSOption
 {
-
     /* panel sms  */
     public function notificator($mobile, $massage)
     {
@@ -90,7 +89,7 @@ class SendSMS extends SMSOption
         //     'massage' => (isset($response->result) && isset($response->messageids) && $response->result == 'success' && strlen($response->messageids) > 5) ? 'پیام با موفقیت ارسال شد' : 'پیام به خطا خورده است',
         //  ];
         $result = [
-            'success'    => true,
+            'success' => true,
             'massage' => 'پیام با موفقیت ارسال شد',
          ];
         return $result;
@@ -192,28 +191,33 @@ class SendSMS extends SMSOption
         }
     }
 
-    public function send($mobile, $type, $data = [  ])
+    public function send($mobile, $type, $massage = "")
     {
         $mobile = $this->sanitize_mobile($mobile);
 
         // بررسی فرمت شماره موبایل
-        if (empty($mobile) || empty($this->sanitize_mobile($mobile))) {
+        if (empty($mobile)) {
             return [
                 'success' => false,
                 'massage' => 'شماره موبایل معتبر نیست.',
              ];
         }
+
+        $sms_type = $this->option[ 'sms_type' ];
+
         if ($type == 'otp') {
             $result = $this->otp($mobile);
             if ($result[ 'success' ]) {
-
-                $sms_type = $this->option[ 'sms_type' ];
 
                 $result = $this->$sms_type($mobile, $result[ 'massage' ]);
                 if (! $result[ 'success' ]) {
                     delete_transient('otp_' . $mobile);
                 }
             }
+        } elseif ($type == 'massage') {
+
+            $result = $this->$sms_type($mobile, $massage);
+
         }
         return $result || [ 'success' => false, 'massage' => 'خطا' ];
     }
